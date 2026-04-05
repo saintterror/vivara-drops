@@ -34,14 +34,20 @@ function FadeInText({ text, scrollProgress }) {
 
 export default function Source() {
   const containerRef = useRef(null)
+  const videoRef = useRef(null)
   const [progress, setProgress] = useState(0)
 
   const handleScroll = useCallback(() => {
     if (!containerRef.current) return
     const rect = containerRef.current.getBoundingClientRect()
-    // progress: 0 when section top reaches viewport top, 1 when fully scrolled through
-    const p = Math.max(0, Math.min(1, -rect.top / (window.innerHeight * 1.5)))
+    const sectionHeight = rect.height - window.innerHeight
+    const p = Math.max(0, Math.min(1, -rect.top / sectionHeight))
     setProgress(p)
+
+    const video = videoRef.current
+    if (video && video.duration) {
+      video.currentTime = p * video.duration
+    }
   }, [])
 
   useEffect(() => {
@@ -51,21 +57,32 @@ export default function Source() {
   }, [handleScroll])
 
   return (
-    // Tall container for scroll-stop pinning
     <section
-      id="source"
+      id="the-source"
       ref={containerRef}
       className="relative"
-      style={{ height: '250dvh' }}
+      style={{ height: '250dvh', overflow: 'hidden' }}
     >
-      {/* Pinned viewport */}
+      {/* Scroll-driven video background */}
       <div
-        className="sticky top-0 left-0 right-0 flex items-center justify-center overflow-hidden bg-[#000000]"
+        className="sticky top-0 left-0 right-0 w-screen flex items-center justify-center"
         style={{ height: '100dvh' }}
       >
-        {/* Content */}
-        <div className="relative z-10 max-w-2xl mx-auto px-6 text-center flex flex-col items-center gap-8">
-          {/* Eyebrow */}
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+      </div>
+
+      {/* Source text content */}
+      <div className="sticky top-0 left-0 right-0 flex items-center justify-center" style={{ height: '100dvh', zIndex: 10 }}>
+        <div className="max-w-2xl mx-auto px-6 text-center flex flex-col items-center gap-8">
           <span
             className="font-mono text-[10px] tracking-[0.3em] uppercase"
             style={{
@@ -79,7 +96,6 @@ export default function Source() {
             The Source
           </span>
 
-          {/* Heading — character by character fade */}
           <h2
             className="font-serif text-3xl md:text-5xl leading-[1.15] tracking-tight"
             style={{ color: '#f0ece4' }}
@@ -90,7 +106,6 @@ export default function Source() {
             />
           </h2>
 
-          {/* Paragraphs — word-by-word fade */}
           {paragraphs.map((p, i) => {
             const threshold = 0.18 + i * 0.18
             const pProgress = Math.max(0, Math.min(1, (progress - threshold) / 0.14))
@@ -108,7 +123,6 @@ export default function Source() {
             )
           })}
 
-          {/* Stats */}
           <div
             className="grid grid-cols-3 gap-8 mt-8"
             style={{
