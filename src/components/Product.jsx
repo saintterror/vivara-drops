@@ -45,42 +45,16 @@ const benefits = [
   },
 ]
 
+import ProductHeader from './ProductHeader'
+
 export default function Product() {
   const [openFaq, setOpenFaq] = useState(null)
   const [quantity, setQuantity] = useState(1)
-  const [headerVisible, setHeaderVisible] = useState(false)
-  const productRef = useRef(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setHeaderVisible(true)
-      },
-      { threshold: 0.15 }
-    )
-    if (productRef.current) observer.observe(productRef.current)
-    return () => observer.disconnect()
-  }, [])
 
   return (
-    <section id="shop" ref={productRef} className="py-28 md:py-36 border-t border-[#2a2a2a]">
+    <section id="shop" className="py-28 md:py-36 border-t border-[#2a2a2a]">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        {/* Product header */}
-        <div className={`text-center mb-16 transition-all duration-[1200ms] ease-out ${
-          headerVisible
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-12'
-        }`}>
-          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#a8a29e] font-sans">
-            Element 003
-          </span>
-          <h2 className="font-serif text-4xl md:text-6xl text-[#f0ece4] leading-[1.1] tracking-tight mt-3">
-            The Alchemic Blend
-          </h2>
-          <p className="font-serif text-lg text-[#a8a29e] mt-4 max-w-xl mx-auto leading-relaxed">
-            Karakoram Shilajit, Tulsi, Saffron, and Orchid Astha Varga
-          </p>
-        </div>
+        <ProductHeader />
 
         {/* Product layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
@@ -111,12 +85,20 @@ export default function Product() {
             </div>
 
             {/* Description */}
-            <p className="font-serif text-[15px] text-[#a8a29e] leading-relaxed mb-8">
-              A liquid adaptogenic tincture. Wild-extracted Karakoram Shilajit
-              combined with Tulsi, Saffron, and Orchid Astha Varga. Suspended in
-              structured spring water with trace colloidal gold and silver. Fast
-              sublingual delivery over capsules or powders.
-            </p>
+            <div className="space-y-5 mb-8">
+              <p className="font-serif text-[15px] text-[#a8a29e] leading-relaxed">
+                Born from a conviction: the most potent medicine already exists in nature, if you know where to look. Our Shilajit is harvested above 14,000 feet in the Karakoram mountains — a raw, unadulterated resin condensed by centuries of geological pressure.
+              </p>
+              <p className="font-serif text-[15px] text-[#a8a29e] leading-relaxed">
+                We then blend it with classical Ayurvedic adjuncts — Tulsi, Blue Lotus, Saffron — each selected for purity, potency, and purpose. No synthetic fillers. No standardised extracts. Just the whole plant, the whole mineral, the whole intention.
+              </p>
+              <p className="font-serif text-[15px] text-[#a8a29e] leading-relaxed">
+                The result is an adaptogenic elixir that bridges matter and mind. Biointelligent, clean, and alive.
+              </p>
+              <p className="font-serif text-[15px] text-[#f0ece4]/50 leading-relaxed pt-2 border-t border-[#2a2a2a]">
+                A liquid adaptogenic tincture. Wild-extracted Karakoram Shilajit combined with Tulsi, Saffron, and Orchid Astha Varga. Suspended in structured spring water with trace colloidal gold and silver. Fast sublingual delivery over capsules or powders.
+              </p>
+            </div>
 
             {/* Quantity */}
             <div className="flex items-center gap-4 mb-6">
